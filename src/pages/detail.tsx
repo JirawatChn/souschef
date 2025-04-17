@@ -8,57 +8,93 @@ import axios from "axios";
 import { UrlPages } from "../components/props";
 import { usePersonality } from "../contexts/usePersonality";
 import { LuLoaderCircle } from "react-icons/lu";
+import { useTranslation } from "react-i18next";
 
 export const Detail: React.FC<UrlPages> = ({ url }) => {
+  const { t, i18n } = useTranslation();
   const { id } = useParams();
+
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const { history, addMessageToHistory } = useChatHistory();
+  const { history, addMessageToHistory, updateLastBotMessage } =
+    useChatHistory();
   const { personality } = usePersonality();
 
   const [loading, setLoading] = useState(false);
 
-  const historyIndex = Number(id);
-  const chatHistory = history[historyIndex];
+  const historyId = String(id);
+  const chatHistory = history.find((h) => h.id === id);
 
   const isSubmitting = useRef(false);
   const [isLoadingFirstAnswer, setIsLoadingFirstAnswer] = useState(false);
+
+  const simulateStreaming = (
+    fullText: string,
+    onUpdate: (text: string) => void,
+    onDone: () => void
+  ) => {
+    let i = 0;
+    const interval = setInterval(() => {
+      i++;
+      onUpdate(fullText.slice(0, i));
+      if (i >= fullText.length) {
+        clearInterval(interval);
+        onDone();
+      }
+    }, 15); // ปรับความเร็วได้ตามใจ
+  };
 
   const scrollToBottom = () => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
+  const hasFetched = useRef(false);
+
   useEffect(() => {
-    if (chatHistory) {
-      scrollToBottom();
+    if (!chatHistory || hasFetched.current) return;
 
-      const hasBotReply = chatHistory.messages.some((m) => m.sender === "bot");
+    const hasBotReply = chatHistory.messages.some((m) => m.sender === "bot");
+    if (hasBotReply) return;
 
-      if (!hasBotReply) {
-        setIsLoadingFirstAnswer(true);
+    hasFetched.current = true;
+    setIsLoadingFirstAnswer(true);
 
-        axios
-          .post(`${url}/ask`, {
-            question: chatHistory.display,
-            personality: personality,
-          })
-          .then((res) => {
-            addMessageToHistory(historyIndex, "bot", res.data.answer);
-          })
-          .catch(() => {
-            addMessageToHistory(
-              historyIndex,
-              "bot",
-              "เกิดข้อผิดพลาดในการดึงคำตอบจากเซิร์ฟเวอร์ 😢"
-            );
-          })
-          .finally(() => {
-            setIsLoadingFirstAnswer(false);
-          });
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chatHistory]);
+    axios
+      .post(`${url}/ask`, {
+        question: chatHistory.display,
+        personality: personality,
+        lang: i18n.language,
+      })
+      .then((res) => {
+        addMessageToHistory(historyId, "bot", ""); // แทรกข้อความเปล่าไว้ก่อน
+
+        simulateStreaming(
+          res.data.answer,
+          (partialText) => updateLastBotMessage(historyId, partialText),
+          () => scrollToBottom()
+        );
+      })
+      .catch(() => {
+        addMessageToHistory(
+          historyId,
+          "bot",
+          "เกิดข้อผิดพลาดในการดึงคำตอบจากเซิร์ฟเวอร์"
+        );
+      })
+      .finally(() => {
+        setIsLoadingFirstAnswer(false);
+      });
+
+    scrollToBottom();
+  }, [
+    chatHistory,
+    url,
+    personality,
+    i18n.language,
+    historyId,
+    addMessageToHistory,
+    updateLastBotMessage,
+  ]);
 
   const handleSubmit = async () => {
     scrollToBottom();
@@ -76,24 +112,25 @@ export const Detail: React.FC<UrlPages> = ({ url }) => {
       return;
     }
 
-    addMessageToHistory(historyIndex, "user", value);
+    addMessageToHistory(historyId, "user", value);
     input.value = "";
 
     try {
       const response = await axios.post(`${url}/ask`, {
         question: value,
         personality: personality,
+        lang: i18n.language,
       });
 
       const answer: string = response.data.answer;
-      addMessageToHistory(historyIndex, "bot", answer);
+      addMessageToHistory(historyId, "bot", answer);
       scrollToBottom();
     } catch (error) {
       console.error("Error fetching bot response:", error);
       addMessageToHistory(
-        historyIndex,
+        historyId,
         "bot",
-        "เกิดข้อผิดพลาดในการดึงคำตอบจากเซิร์ฟเวอร์ 😢"
+        "เกิดข้อผิดพลาดในการดึงคำตอบจากเซิร์ฟเวอร์"
       );
       scrollToBottom();
     } finally {
@@ -123,17 +160,17 @@ export const Detail: React.FC<UrlPages> = ({ url }) => {
                   </div>
                 ) : (
                   <div className="self-start whitespace-pre-line mt-6">
-                    {msg.message}
+                      {msg.message}
                   </div>
                 )}
               </React.Fragment>
             ))}
-            {isLoadingFirstAnswer ||
-              (loading && (
-                <div className="self-start text-gray-400 mt-4 flex items-center gap-2">
-                  <LuLoaderCircle className="animate-spin" /> กำลังคิดคำตอบ...
-                </div>
-              ))}
+            {(isLoadingFirstAnswer || loading) && (
+              <div className="self-start text-gray-400 mt-4 flex items-center gap-2">
+                <LuLoaderCircle className="animate-spin" /> {t("loading")}
+              </div>
+            )}
+
             <div ref={bottomRef} />
           </div>
         </div>

@@ -5,6 +5,7 @@ import "./App.css";
 import { Detail } from "./pages/detail";
 import { Recommendation } from "./pages/recommend";
 import { RandomMenu } from "./pages/random";
+import { History } from "./pages/history";
 
 function App() {
   const url = import.meta.env.VITE_API_URL;
@@ -15,6 +16,7 @@ function App() {
         <Route path="/detail/:id" element={<Detail url={url}/>} />
         <Route path="/recommendation" element={<Recommendation />} />
         <Route path="/random" element={<RandomMenu url={url}/>} />
+        <Route path="/history" element={<History />} />
       </Routes>
     </BrowserRouter>
   );

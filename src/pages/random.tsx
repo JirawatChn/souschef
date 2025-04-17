@@ -5,44 +5,60 @@ import { LuDices, LuChevronRight } from "react-icons/lu";
 import { Card, Flex } from "@radix-ui/themes";
 import { useNavigate } from "react-router";
 import { UrlPages } from "../components/props";
+import { useTranslation } from "react-i18next";
+import { useChatHistory } from "../components/useHistory";
 
-export const RandomMenu: React.FC<UrlPages> = ({ url }) => {
+export const RandomMenu: React.FC<UrlPages> = () => {
+  const { t, i18n } = useTranslation();
+  const navigate = useNavigate();
+  const { createHistory } = useChatHistory();
 
-    const navigate = useNavigate();
-
-    const menu = [
-    "ข้าวผัด",
-    "ต้มยำกุ้ง",
-    "ส้มตำ",
-    "แกงเขียวหวาน",
-    "ผัดไทย",
-    "ข้าวมันไก่",
-    "ลาบหมู",
-    "ยำวุ้นเส้น",
-    "ขนมจีนน้ำยา",
-    "แกงส้ม",
-    "ผัดกระเพรา",
-    "ข้าวซอย",
+  const menu = [
+    "menu.friedRice",
+    "menu.tomYumGoong",
+    "menu.somtam",
+    "menu.greenCurry",
+    "menu.padThai",
+    "menu.hainaneseChickenRice",
+    "menu.larbMoo",
+    "menu.yumWoonSen",
+    "menu.khanomJeenNamYa",
+    "menu.kaengSom",
+    "menu.padKrapow",
+    "menu.khaoSoi",
   ];
 
   const [randomMenus, setRandomMenus] = useState<string[]>([]);
 
   const randomClick = () => {
-    const remainingMenus = menu.filter((item) => !randomMenus.includes(item));
-
-    if (remainingMenus.length === 0) {
-      // รีเซต
+    if (randomMenus.length >= 9) {
       setRandomMenus([]);
       return;
     }
-
+  
+    const remainingMenus = menu.filter((item) => !randomMenus.includes(item));
+  
+    if (remainingMenus.length === 0) {
+      setRandomMenus([]);
+      return;
+    }
+  
     const random =
       remainingMenus[Math.floor(Math.random() * remainingMenus.length)];
+  
     setRandomMenus((prev) => [...prev, random]);
   };
+  
+  const handleClick = (menuKey: string) => {
+    const translatedMenu = t(menuKey);
+    const lang = i18n.language;
+    const question =
+      lang === "th"
+        ? `วิธีทำ${translatedMenu}`
+        : `How to cook ${translatedMenu}`;
 
-  const handleClick = (menu:string) => {
-    navigate("/detail", { state: { question: menu } });
+    const newId = createHistory(question);
+    navigate(`/detail/${newId}`);
   };
 
   return (
@@ -61,7 +77,7 @@ export const RandomMenu: React.FC<UrlPages> = ({ url }) => {
           }}
         />
         <span className="bold text-3xl mt-4">sousChef AI</span>
-        <span className="bold text-lg">กดเพื่อสุ่มเมนูอาหาร</span>
+        <span className="bold text-lg">{t("randomHeading")}</span>
 
         <div className="mt-8">
           <button
@@ -69,7 +85,7 @@ export const RandomMenu: React.FC<UrlPages> = ({ url }) => {
             onClick={randomClick}
           >
             <LuDices className="w-5 h-5" />
-            สุ่มเมนูอาหาร
+            {t("randomClick")}
             <LuChevronRight className="w-5 h-5" />
           </button>
         </div>
@@ -80,11 +96,10 @@ export const RandomMenu: React.FC<UrlPages> = ({ url }) => {
               {randomMenus.map((item, index) => (
                 <Card
                   key={index}
-                  className="relative p-4 w-[200px] h-[60px] cursor-pointer hover:shadow-md transition flex items-center"
+                  className="relative p-4 w-[250px] h-[60px] cursor-pointer hover:shadow-md transition flex items-center whitespace-pre-line"
                   onClick={() => handleClick(item)}
                 >
-                  <span className="text-left text-base">{item}</span>
-
+                  <span className="text-left text-base">{t(item)}</span>
                   <div className="absolute right-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-[#2E3440] text-white flex items-center justify-center">
                     <LuChevronRight className="w-4 h-4" />
                   </div>

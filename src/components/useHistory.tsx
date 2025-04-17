@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router";
+import { v4 as uuidv4 } from "uuid";
 
 interface ChatMessage {
   sender: "user" | "bot";
@@ -6,6 +8,7 @@ interface ChatMessage {
 }
 
 interface ChatHistory {
+  id: string;
   display: string;
   messages: ChatMessage[];
 }
@@ -13,6 +16,7 @@ interface ChatHistory {
 const LOCAL_STORAGE_KEY = "history";
 
 export const useChatHistory = () => {
+  const navigate = useNavigate();
   const [history, setHistory] = useState<ChatHistory[]>(() => {
     const storedHistory = localStorage.getItem(LOCAL_STORAGE_KEY);
     return storedHistory ? JSON.parse(storedHistory) : [];
@@ -25,6 +29,8 @@ export const useChatHistory = () => {
   // สร้าง history ใหม่ (คำถามใหม่ที่ user ส่ง)
   // เพิ่ม optional botReply parameter
   const createHistory = (initialMessage: string, botReply?: string) => {
+    const id = uuidv4(); // 🆔 สร้าง id ใหม่ทุกครั้ง
+
     const userMessage: ChatMessage = {
       sender: "user",
       message: initialMessage,
@@ -34,38 +40,36 @@ export const useChatHistory = () => {
       : undefined;
 
     const newHistory: ChatHistory = {
+      id,
       display: initialMessage,
       messages: botMessage ? [userMessage, botMessage] : [userMessage],
     };
 
-    const newIndex = history.length;
     setHistory((prevHistory) => [...prevHistory, newHistory]);
 
-    return newIndex;
+    return id;
   };
 
   // เพิ่มข้อความลงใน history ที่มีอยู่แล้ว
   const addMessageToHistory = (
-    historyIndex: number,
+    id: string,
     sender: "user" | "bot",
     message: string
   ) => {
     setHistory((prevHistory) => {
       const newHistory = [...prevHistory];
-      const target = newHistory[historyIndex];
-
+      const target = newHistory.find((h) => h.id === id);
+  
       if (target) {
         const lastMessage = target.messages[target.messages.length - 1];
-
-        // ถ้าเป็นข้อความกำลังโหลด และ sender เดิมเป็น bot → แทนที่
+  
         const isLoadingReply =
           lastMessage?.sender === "bot" &&
           lastMessage?.message === "กำลังหาคำตอบให้อยู่... 🍳";
-
+  
         if (isLoadingReply) {
           lastMessage.message = message; // แทนที่ข้อความ
         } else {
-          // ตรวจสอบซ้ำว่าข้อความซ้ำไหมก่อนเพิ่ม
           if (
             lastMessage?.sender !== sender ||
             lastMessage?.message !== message
@@ -74,19 +78,54 @@ export const useChatHistory = () => {
           }
         }
       }
-
+  
       return newHistory;
     });
   };
+  
+  const updateLastBotMessage = (id: string, newText: string) => {
+    setHistory((prev) =>
+      prev.map((h) =>
+        h.id === id
+          ? {
+              ...h,
+              messages: h.messages.map((m, i, arr) =>
+                i === arr.length - 1 && m.sender === "bot"
+                  ? { ...m, message: newText }
+                  : m
+              ),
+            }
+          : h
+      )
+    );
+  };
+  
 
-  const clearHistory = () => {
+  const clearHistory = (currentId?: string) => {
     setHistory([]);
     localStorage.removeItem(LOCAL_STORAGE_KEY);
+  
+    if (currentId) {
+      navigate("/"); // กลับหน้าหลักถ้าอยู่ในหน้าที่มี id
+    }
   };
+  
 
-  const removeHistory = (index: number) => {
-    setHistory((prev) => prev.filter((_, i) => i !== index));
+  const removeHistory = (idToRemove: string, currentId?: string) => {
+    setHistory((prev) => prev.filter((item) => item.id !== idToRemove));
+  
+    if (currentId && idToRemove === currentId) {
+      navigate("/");
+    }
   };
+  
 
-  return { history, createHistory, addMessageToHistory, clearHistory , removeHistory };
+  return {
+    history,
+    createHistory,
+    addMessageToHistory,
+    clearHistory,
+    removeHistory,
+    updateLastBotMessage
+  };
 };

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { HiPaperAirplane } from "react-icons/hi2";
 import { LuLoaderCircle } from "react-icons/lu";
 
@@ -13,6 +14,7 @@ export const InputText = ({
   inputRef,
   loading,
 }: InputTextProps) => {
+  const { t } = useTranslation();
   const [inputValue, setInputValue] = useState("");
 
   const onSubmit = () => {
@@ -27,7 +29,7 @@ export const InputText = ({
       <input
         ref={inputRef}
         type="text"
-        placeholder={loading ? "กำลังส่งคำถาม..." : "พิมพ์เมนูที่ต้องการหรือวัตถุดิบที่มีอยู่"}
+        placeholder={loading ? t("sending") : t("input")}
         className="bg-transparent border-none outline-none text-gray-600 placeholder-gray-400"
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
@@ -37,7 +39,7 @@ export const InputText = ({
             onSubmit();
           }
         }}
-        disabled = { loading }
+        disabled={loading}
       />
 
       <div className="flex justify-end mt-2">

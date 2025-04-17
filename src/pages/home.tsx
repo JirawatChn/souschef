@@ -1,22 +1,28 @@
 import { MainLayout } from "../components/mainLayout";
 import souschefLogo from "../assets/souschef.png";
 import { Badge, Box, Card, Flex, Text } from "@radix-ui/themes";
-import {  LuMessageCircleQuestion } from "react-icons/lu";
+import { LuMessageCircleQuestion } from "react-icons/lu";
 import { useMemo, useRef } from "react";
 import { useNavigate } from "react-router";
 import { InputText } from "../components/input";
 import { useChatHistory } from "../components/useHistory";
+import { useTranslation } from "react-i18next";
 
 const allQuestions = [
-  { value: "มีหมูเหลือทำเมนูอะไรกินดี ?", result: "pass" },
-  { value: "ขอเมนูญี่ปุ่นสักเมนูนึงได้ไหม ?", result: "pass" },
-  { value: "มื้อเย็นวันนี้ทำอะไรกินดี ?", result: "pass" },
-  { value: "ข้าวเย็นวันนี้ทำอะไรกินดี ?", result: "fail" },
-  { value: "ขอเมนูอาหารไทยง่ายๆ หน่อย", result: "pass" },
-  { value: "ขอเมนูของหวานง่ายๆ ได้มั้ย ?", result: "pass" },
+  { key: "question.porkMenu", result: "pass" },
+  { key: "question.japaneseMenu", result: "pass" },
+  { key: "question.dinnerIdea1", result: "pass" },
+  { key: "question.dinnerIdea2", result: "fail" },
+  { key: "question.thaiEasyMenu", result: "pass" },
+  { key: "question.dessertEasyMenu", result: "pass" },
+  { key: "question.eggLeftover", result: "pass" },
+  { key: "question.noCooking", result: "pass" },
+  { key: "question.onePanEasy", result: "pass" },
+  { key: "question.healthyDinner", result: "pass" },
 ];
 
 export const Home = () => {
+  const { t } = useTranslation();
   const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
   const { createHistory } = useChatHistory();
@@ -34,7 +40,7 @@ export const Home = () => {
   };
 
   const handleCardClick = (q: string) => {
-    const newId: number = createHistory(q);
+    const newId: string = createHistory(q);
     navigate(`/detail/${newId}`);
   };
 
@@ -60,7 +66,7 @@ export const Home = () => {
           }}
         />
         <span className="bold text-3xl mt-4">sousChef AI</span>
-        <span className="bold ">ผู้ช่วยเซฟแนะนำการทำอาหาร</span>
+        <span className="bold ">{t("heading")}</span>
         <Flex
           direction="row"
           wrap="wrap"
@@ -72,7 +78,7 @@ export const Home = () => {
             <div
               key={i}
               style={{ textDecoration: "none" }}
-              onClick={() => handleCardClick(q.value)}
+              onClick={() => handleCardClick(t(q.key))}
             >
               <Card
                 variant="classic"
@@ -87,7 +93,11 @@ export const Home = () => {
                 className="hover:shadow-xl hover:scale-[1.03] bg-white relative"
               >
                 <div className="absolute top-2 right-2">
-                  <Badge color="amber">{q.result}</Badge>
+                  {q.result === "pass" ? (
+                    <Badge color="amber">{q.result}</Badge>
+                  ) : (
+                    <Badge color="red">{q.result}</Badge>
+                  )}
                 </div>
 
                 <Flex direction="column" gap="2" align="start">
@@ -106,17 +116,14 @@ export const Home = () => {
                     color="gray"
                     className="whitespace-pre-line"
                   >
-                    {q.value}
+                    {t(q.key)}
                   </Text>
                 </Flex>
               </Card>
             </div>
           ))}
         </Flex>
-        <InputText
-          inputRef={inputRef}
-          handleSubmit={handleSubmit}
-        />
+        <InputText inputRef={inputRef} handleSubmit={handleSubmit} />
       </div>
     </MainLayout>
   );

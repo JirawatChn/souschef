@@ -1,29 +1,34 @@
 import { DropdownMenu } from "radix-ui";
-import { useState } from "react";
 import { LuChevronDown } from "react-icons/lu";
 import { usePersonality } from "../contexts/usePersonality";
 import type { Personalitys } from "../contexts/personalityContext";
+import { useTranslation } from "react-i18next";
 
 const Personality = () => {
+  const { t } = useTranslation();
   const { personality, setPersonality } = usePersonality();
-  const personalities: { label: string; value: Personalitys; description: string }[] = [
+  const personalities: {
+    label: string;
+    value: Personalitys;
+    description: string;
+  }[] = [
     {
-      label: "SousChef Mode",
       value: "souschef",
-      description: "แนะนำการทำอาหารแบบ\nมืออาชีพและเป็นทางการ",
+      label: t("mode.souschef.label"),
+      description: t("mode.souschef.description"),
     },
     {
-      label: "Buddy Mode",
       value: "buddy",
-      description: "แนะนำการทำอาหารแบบ\nเพื่อนสนิทสอนทำอาหาร",
+      label: t("mode.buddy.label"),
+      description: t("mode.buddy.description"),
     },
     {
-      label: "Chef Ian Mode",
       value: "chef-ian",
-      description: "แนะนำการทำอาหารแบบ\nเชฟเอียน Masterchef",
+      label: t("mode.chef.label"),
+      description: t("mode.chef.description"),
     },
   ];
-  
+
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger asChild>
@@ -61,8 +66,14 @@ const Personality = () => {
 };
 
 const Language = () => {
-  const [language, setLanguage] = useState("th");
+  const { i18n } = useTranslation();
+
+  const language = i18n.language;
   const languageLabel = language === "th" ? "ภาษาไทย" : "English";
+
+  const changeLanguage = (lng: "th" | "en") => {
+    i18n.changeLanguage(lng);
+  };
 
   return (
     <DropdownMenu.Root>
@@ -81,13 +92,13 @@ const Language = () => {
         >
           <DropdownMenu.Item
             className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-            onSelect={() => setLanguage("th")}
+            onSelect={() => changeLanguage("th")}
           >
             ภาษาไทย
           </DropdownMenu.Item>
           <DropdownMenu.Item
             className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-            onSelect={() => setLanguage("en")}
+            onSelect={() => changeLanguage("en")}
           >
             English
           </DropdownMenu.Item>
