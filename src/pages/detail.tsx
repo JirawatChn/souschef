@@ -9,6 +9,7 @@ import { UrlPages } from "../components/props";
 import { usePersonality } from "../contexts/usePersonality";
 import { LuLoaderCircle } from "react-icons/lu";
 import { useTranslation } from "react-i18next";
+import ReactMarkdown from "react-markdown";
 
 export const Detail: React.FC<UrlPages> = ({ url }) => {
   const { t, i18n } = useTranslation();
@@ -49,16 +50,18 @@ export const Detail: React.FC<UrlPages> = ({ url }) => {
   };
 
   const hasFetched = useRef(false);
+  const [isAsking,setIsAsking] = useState(false)
 
   useEffect(() => {
-    if (!chatHistory || hasFetched.current) return;
-
+    if (!chatHistory || hasFetched.current || isAsking) return;
+  
     const hasBotReply = chatHistory.messages.some((m) => m.sender === "bot");
     if (hasBotReply) return;
-
+  
     hasFetched.current = true;
     setIsLoadingFirstAnswer(true);
-
+    setIsAsking(true)
+  
     axios
       .post(`${url}/ask`, {
         question: chatHistory.display,
@@ -66,8 +69,8 @@ export const Detail: React.FC<UrlPages> = ({ url }) => {
         lang: i18n.language,
       })
       .then((res) => {
-        addMessageToHistory(historyId, "bot", ""); // แทรกข้อความเปล่าไว้ก่อน
-
+        addMessageToHistory(historyId, "bot", "");
+  
         simulateStreaming(
           res.data.answer,
           (partialText) => updateLastBotMessage(historyId, partialText),
@@ -83,8 +86,9 @@ export const Detail: React.FC<UrlPages> = ({ url }) => {
       })
       .finally(() => {
         setIsLoadingFirstAnswer(false);
+        setIsAsking(false)
       });
-
+  
     scrollToBottom();
   }, [
     chatHistory,
@@ -94,36 +98,45 @@ export const Detail: React.FC<UrlPages> = ({ url }) => {
     historyId,
     addMessageToHistory,
     updateLastBotMessage,
+    isAsking
   ]);
+  
 
   const handleSubmit = async () => {
     scrollToBottom();
-    if (isSubmitting.current) return;
+    if (isSubmitting.current || isAsking) return;
+  
     isSubmitting.current = true;
-    setLoading(true); // ← เพิ่มตรงนี้
-
+    setIsAsking(true)
+    setLoading(true);
+  
     const input = inputRef.current;
-    if (!input) return;
-
+    if (!input) {
+      isSubmitting.current = false;
+      setIsAsking(false)
+      setLoading(false);
+      return;
+    }
+  
     const value = input.value.trim();
     if (!value) {
       isSubmitting.current = false;
-      setLoading(false); // ← และตรงนี้
+      setIsAsking(false)
+      setLoading(false);
       return;
     }
-
+  
     addMessageToHistory(historyId, "user", value);
     input.value = "";
-
+  
     try {
       const response = await axios.post(`${url}/ask`, {
         question: value,
         personality: personality,
         lang: i18n.language,
       });
-
-      const answer: string = response.data.answer;
-      addMessageToHistory(historyId, "bot", answer);
+  
+      addMessageToHistory(historyId, "bot", response.data.answer);
       scrollToBottom();
     } catch (error) {
       console.error("Error fetching bot response:", error);
@@ -135,9 +148,11 @@ export const Detail: React.FC<UrlPages> = ({ url }) => {
       scrollToBottom();
     } finally {
       isSubmitting.current = false;
-      setLoading(false); // ← ปิดโหลด
+      setIsAsking(false)
+      setLoading(false);
     }
   };
+  
 
   if (!chatHistory) {
     return (
@@ -160,7 +175,7 @@ export const Detail: React.FC<UrlPages> = ({ url }) => {
                   </div>
                 ) : (
                   <div className="self-start whitespace-pre-line mt-6">
-                      {msg.message}
+                    <ReactMarkdown>{msg.message}</ReactMarkdown>
                   </div>
                 )}
               </React.Fragment>

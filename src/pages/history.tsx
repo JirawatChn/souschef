@@ -75,7 +75,7 @@ export const History = () => {
                           {item.display}
                         </p>
                         {preview && (
-                          <div className="text-sm text-gray-500 line-clamp-1 break-words">
+                          <div className="text-sm text-gray-500 line-clamp-1 break-words w-[95%]">
                             {preview}
                           </div>
                         )}

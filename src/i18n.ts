@@ -8,7 +8,7 @@ i18n
   .init({
     fallbackLng: "th",
     lng: "th",
-    debug: true,
+    debug: false,
     interpolation: {
       escapeValue: false,
     },
