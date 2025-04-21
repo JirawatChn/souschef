@@ -9,7 +9,7 @@ import './i18n'; // ← ต้อง import ก่อนใช้ <App />
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <Theme>
-      <div className="min-h-screen bg-[#FFFEF8]">
+      <div className="min-h-screen egg-background">
         <PersonalityProvider>
           <App />
         </PersonalityProvider>
