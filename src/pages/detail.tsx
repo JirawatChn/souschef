@@ -50,27 +50,35 @@ export const Detail: React.FC<UrlPages> = ({ url }) => {
   };
 
   const hasFetched = useRef(false);
-  const [isAsking,setIsAsking] = useState(false)
+  const [isAsking, setIsAsking] = useState(false);
 
   useEffect(() => {
     if (!chatHistory || hasFetched.current || isAsking) return;
-  
+
     const hasBotReply = chatHistory.messages.some((m) => m.sender === "bot");
     if (hasBotReply) return;
-  
+
     hasFetched.current = true;
     setIsLoadingFirstAnswer(true);
-    setIsAsking(true)
-  
+    setIsAsking(true);
+
     axios
-      .post(`${url}/ask`, {
-        question: chatHistory.display,
-        personality: personality,
-        lang: i18n.language,
-      })
+      .post(
+        `${url}/ask`,
+        {
+          question: chatHistory.display,
+          personality: personality,
+          lang: i18n.language,
+        },
+        {
+          headers: {
+            "X-Session-ID": historyId,
+          },
+        }
+      )
       .then((res) => {
         addMessageToHistory(historyId, "bot", "");
-  
+
         simulateStreaming(
           res.data.answer,
           (partialText) => updateLastBotMessage(historyId, partialText),
@@ -86,9 +94,9 @@ export const Detail: React.FC<UrlPages> = ({ url }) => {
       })
       .finally(() => {
         setIsLoadingFirstAnswer(false);
-        setIsAsking(false)
+        setIsAsking(false);
       });
-  
+
     scrollToBottom();
   }, [
     chatHistory,
@@ -98,44 +106,51 @@ export const Detail: React.FC<UrlPages> = ({ url }) => {
     historyId,
     addMessageToHistory,
     updateLastBotMessage,
-    isAsking
+    isAsking,
   ]);
-  
 
   const handleSubmit = async () => {
     scrollToBottom();
     if (isSubmitting.current || isAsking) return;
-  
+
     isSubmitting.current = true;
-    setIsAsking(true)
+    setIsAsking(true);
     setLoading(true);
-  
+
     const input = inputRef.current;
     if (!input) {
       isSubmitting.current = false;
-      setIsAsking(false)
+      setIsAsking(false);
       setLoading(false);
       return;
     }
-  
+
     const value = input.value.trim();
     if (!value) {
       isSubmitting.current = false;
-      setIsAsking(false)
+      setIsAsking(false);
       setLoading(false);
       return;
     }
-  
+
     addMessageToHistory(historyId, "user", value);
     input.value = "";
-  
+
     try {
-      const response = await axios.post(`${url}/ask`, {
-        question: value,
-        personality: personality,
-        lang: i18n.language,
-      });
-  
+      const response = await axios.post(
+        `${url}/ask`,
+        {
+          question: value,
+          personality: personality,
+          lang: i18n.language,
+        },
+        {
+          headers: {
+            "X-Session-ID": historyId,
+          },
+        }
+      );
+
       addMessageToHistory(historyId, "bot", response.data.answer);
       scrollToBottom();
     } catch (error) {
@@ -148,11 +163,10 @@ export const Detail: React.FC<UrlPages> = ({ url }) => {
       scrollToBottom();
     } finally {
       isSubmitting.current = false;
-      setIsAsking(false)
+      setIsAsking(false);
       setLoading(false);
     }
   };
-  
 
   if (!chatHistory) {
     return (

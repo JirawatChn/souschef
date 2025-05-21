@@ -1,6 +1,6 @@
 import { MainLayout } from "../components/mainLayout";
 import souschefLogo from "../assets/souschef.png";
-import { Badge, Box, Card, Flex, Text } from "@radix-ui/themes";
+import { Box, Card, Flex, Text } from "@radix-ui/themes";
 import { LuMessageCircleQuestion } from "react-icons/lu";
 import { useMemo, useRef } from "react";
 import { useNavigate } from "react-router";
@@ -12,7 +12,7 @@ const allQuestions = [
   { key: "question.porkMenu", result: "pass" },
   { key: "question.japaneseMenu", result: "pass" },
   { key: "question.dinnerIdea1", result: "pass" },
-  { key: "question.dinnerIdea2", result: "fail" },
+  { key: "question.dinnerIdea2", result: "pass" },
   { key: "question.thaiEasyMenu", result: "pass" },
   { key: "question.dessertEasyMenu", result: "pass" },
   { key: "question.eggLeftover", result: "pass" },
@@ -92,14 +92,6 @@ export const Home = () => {
                 }}
                 className="hover:shadow-xl hover:scale-[1.03] bg-white relative"
               >
-                <div className="absolute top-2 right-2">
-                  {q.result === "pass" ? (
-                    <Badge color="amber">{q.result}</Badge>
-                  ) : (
-                    <Badge color="red">{q.result}</Badge>
-                  )}
-                </div>
-
                 <Flex direction="column" gap="2" align="start">
                   <Box
                     style={{

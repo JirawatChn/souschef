@@ -65,6 +65,7 @@ i18n
           },
           delete:"ลบ",
           history:"ประวัติการแชท",
+          no_history:"ไม่มีประวัติการแชท",
           seeAll:"ดูเพิ่มเติม"
         },
       },
@@ -121,6 +122,7 @@ i18n
           },
           delete:"Delete",
           history:"Chat History",
+          no_history:"No chat history",
           seeAll:"See all"
         },
       },
