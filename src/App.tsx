@@ -10,9 +10,9 @@ import { History } from "./pages/history";
 function App() {
   const url = import.meta.env.VITE_API_URL;
   return (
-    <BrowserRouter basename="souschef">
+    <BrowserRouter basename="/souschef">
       <Routes>
-        <Route path="/home" element={<Home />} />
+        <Route path="/" element={<Home />} />
         <Route path="/detail/:id" element={<Detail url={url}/>} />
         <Route path="/recommendation" element={<Recommendation />} />
         <Route path="/random" element={<RandomMenu url={url}/>} />
