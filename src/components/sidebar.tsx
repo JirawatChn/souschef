@@ -6,7 +6,7 @@ import {
   LuEllipsis,
   LuHistory,
 } from "react-icons/lu";
-import { Link , useParams } from "react-router";
+import { Link, useParams } from "react-router";
 import { useChatHistory } from "./useHistory";
 import { useTranslation } from "react-i18next";
 
@@ -33,13 +33,13 @@ export const Sidebar = () => {
         <div className="sidebar-header">
           <span className="sidebar-title">sousChef AI</span>
         </div>
-        <a href="/" className="icon">
+        <Link to="/home" className="icon">
           <HiOutlinePencilSquare className="w-6 h-6" />
-        </a>
+        </Link>
       </div>
 
       <nav className="sidebar-menu">
-        <Link to="/" className="menu-item">
+        <Link to="/home" className="menu-item">
           <LuBot className="w-6 h-6" />
           <span className="bold">sousChef</span>
         </Link>

@@ -12,7 +12,7 @@ function App() {
   return (
     <BrowserRouter basename="souschef">
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/home" element={<Home />} />
         <Route path="/detail/:id" element={<Detail url={url}/>} />
         <Route path="/recommendation" element={<Recommendation />} />
         <Route path="/random" element={<RandomMenu url={url}/>} />
