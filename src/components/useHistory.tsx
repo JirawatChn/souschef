@@ -29,7 +29,7 @@ export const useChatHistory = () => {
   // สร้าง history ใหม่ (คำถามใหม่ที่ user ส่ง)
   // เพิ่ม optional botReply parameter
   const createHistory = (initialMessage: string, botReply?: string) => {
-    const id = uuidv4(); // 🆔 สร้าง id ใหม่ทุกครั้ง
+    const id = uuidv4(); 
 
     const userMessage: ChatMessage = {
       sender: "user",

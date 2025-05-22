@@ -12,12 +12,9 @@ const allQuestions = [
   { key: "question.porkMenu", result: "pass" },
   { key: "question.japaneseMenu", result: "pass" },
   { key: "question.dinnerIdea1", result: "pass" },
-  { key: "question.dinnerIdea2", result: "pass" },
   { key: "question.thaiEasyMenu", result: "pass" },
   { key: "question.dessertEasyMenu", result: "pass" },
   { key: "question.eggLeftover", result: "pass" },
-  { key: "question.noCooking", result: "pass" },
-  { key: "question.onePanEasy", result: "pass" },
   { key: "question.healthyDinner", result: "pass" },
 ];
 
