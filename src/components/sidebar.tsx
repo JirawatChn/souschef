@@ -33,13 +33,13 @@ export const Sidebar = () => {
         <div className="sidebar-header">
           <span className="sidebar-title">sousChef AI</span>
         </div>
-        <Link to="." className="icon">
+        <Link to="/" className="icon">
           <HiOutlinePencilSquare className="w-6 h-6" />
         </Link>
       </div>
 
       <nav className="sidebar-menu">
-        <Link to="." className="menu-item">
+        <Link to="/" className="menu-item">
           <LuBot className="w-6 h-6" />
           <span className="bold">sousChef</span>
         </Link>
