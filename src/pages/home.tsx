@@ -49,7 +49,7 @@ export const Home = () => {
 
   return (
     <MainLayout>
-      <div className="flex flex-col justify-center items-center mx-auto my-[3rem]">
+      <div className="flex flex-col justify-center items-center mx-auto lg:my-[3rem] ">
         <img
           src={souschefLogo}
           alt="logo"

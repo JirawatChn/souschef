@@ -178,8 +178,8 @@ export const Detail: React.FC<UrlPages> = ({ url }) => {
 
   return (
     <MainLayout>
-      <div className="flex justify-center space-y-4 overflow-y-auto h-[calc(100vh-200px)] pr-4">
-        <div className="w-1/2 relative">
+      <div className="flex justify-center space-y-4 overflow-y-auto h-[calc(100vh-200px)] pr-0 md:pr-4 w-full">
+        <div className="w-full md:w-1/2 relative px-2">
           <div className="flex flex-col space-y-4">
             {chatHistory.messages.map((msg, index) => (
               <React.Fragment key={index}>
@@ -199,19 +199,17 @@ export const Detail: React.FC<UrlPages> = ({ url }) => {
                 <LuLoaderCircle className="animate-spin" /> {t("loading")}
               </div>
             )}
-
             <div ref={bottomRef} />
           </div>
         </div>
       </div>
-
-      <div className="fixed bottom-0 left-0 w-full px-4 mb-6 flex justify-center z-50 pl-[250px] ">
-        <InputText
-          inputRef={inputRef}
-          handleSubmit={handleSubmit}
-          loading={isLoadingFirstAnswer || loading}
-        />
-      </div>
+      <div className="fixed bottom-0 left-0 w-full px-2 md:px-4 mb-4 flex justify-center z-50 md:pl-[250px] ">
+          <InputText
+            inputRef={inputRef}
+            handleSubmit={handleSubmit}
+            loading={isLoadingFirstAnswer || loading}
+          />
+        </div>
     </MainLayout>
   );
 };

@@ -25,7 +25,7 @@ export const InputText = ({
   };
 
   return (
-    <div className="flex flex-col bg-white rounded-xl px-4 py-2 mt-[6rem] w-1/2 h-[100px] shadow-md border border-gray-200 justify-between">
+    <div className="flex flex-col bg-white rounded-xl px-2 sm:px-4 py-2 mt-8 sm:mt-[6rem] w-full sm:w-1/2 h-[90px] sm:h-[100px] shadow-md border border-gray-200 justify-between">
       <input
         ref={inputRef}
         type="text"
