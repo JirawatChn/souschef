@@ -1,4 +1,4 @@
-import i18n from "i18next";
+﻿import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 import LanguageDetector from "i18next-browser-languagedetector";
 
@@ -60,10 +60,10 @@ i18n
             padKrapow: "ผัดกระเพรา",
             khaoSoi: "ข้าวซอย",
           },
-          delete:"ลบ",
-          history:"ประวัติการแชท",
-          no_history:"ไม่มีประวัติการแชท",
-          seeAll:"ดูเพิ่มเติม"
+          delete: "ลบ",
+          history: "ประวัติการแชท",
+          no_history: "ไม่มีประวัติการแชท",
+          seeAll: "ดูเพิ่มเติม",
         },
       },
       en: {
@@ -114,10 +114,63 @@ i18n
             padKrapow: "Stir-fried Basil with Meat",
             khaoSoi: "Northern Thai Curry\n Noodles",
           },
-          delete:"Delete",
-          history:"Chat History",
-          no_history:"No chat history",
-          seeAll:"See all"
+          delete: "Delete",
+          history: "Chat History",
+          no_history: "No chat history",
+          seeAll: "See all",
+        },
+      },
+      cn: {
+        translation: {
+          heading: "你的 AI 烹饪助手",
+          random: "随机菜谱",
+          recommendation: "推荐菜谱",
+          input: "输入想做的菜或现有的食材",
+          sending: "正在发送问题...",
+          loading: "正在思考答案...",
+          mode: {
+            souschef: {
+              label: "副厨模式",
+              description: "提供专业正式的烹饪指导",
+            },
+            buddy: {
+              label: "好友模式",
+              description: "像朋友一样提供轻松的烹饪建议",
+            },
+            chef: {
+              label: "Chef Ian 模式",
+              description: "提供像\nMasterChef Thailand 的 Ian 主厨一样的建议",
+            },
+          },
+          question: {
+            porkMenu: "剩下的猪肉可以做什么？",
+            japaneseMenu: "可以推荐一道日本料理吗？",
+            dinnerIdea1: "今晚吃什么好？",
+            thaiEasyMenu: "给我一道简单的泰国菜。",
+            dessertEasyMenu: "做什么甜点好？",
+            eggLeftover: "剩下的鸡蛋可以做什么？",
+            healthyDinner: "有什么健康菜谱推荐？",
+          },
+          randomHeading: "点击随机生成菜谱",
+          randomClick: "随机生成菜谱",
+          menu: {
+            friedRice: "炒饭",
+            tomYumGoong: "冬阴功汤",
+            somtam: "青木瓜沙拉",
+            greenCurry: "泰式绿咖喱",
+            padThai: "泰式炒河粉",
+            hainaneseChickenRice: "海南鸡饭",
+            larbMoo: "泰式辣拌猪肉 (Larb Moo)",
+            yumWoonSen: "泰式粉丝沙拉",
+            khanomJeenNamYa: "泰式咖喱米粉",
+            kaengSom: "泰式酸咖喱 (Kaeng Som)",
+            padKrapow: "泰式罗勒炒肉",
+            khaoSoi: "泰北咖喱面",
+          },
+          delete: "删除",
+          history: "聊天历史",
+          no_history: "暂无聊天记录",
+          seeAll: "查看全部",
         },
       },
     },

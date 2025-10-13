@@ -1,4 +1,4 @@
-import { DropdownMenu } from "radix-ui";
+﻿import { DropdownMenu } from "radix-ui";
 import { LuChevronDown } from "react-icons/lu";
 import { usePersonality } from "../contexts/usePersonality";
 import type { Personalitys } from "../contexts/personalityContext";
@@ -69,9 +69,16 @@ const Language = () => {
   const { i18n } = useTranslation();
 
   const language = i18n.language;
-  const languageLabel = language === "th" ? "ภาษาไทย" : "English";
+  const normalizedLanguage = language.split("-")[0] as "th" | "en" | "cn";
+  const languageLabelMap = {
+    th: "ภาษาไทย",
+    en: "English",
+    cn: "中文",
+  } as const;
+  const languageLabel =
+    languageLabelMap[normalizedLanguage] ?? languageLabelMap.en;
 
-  const changeLanguage = (lng: "th" | "en") => {
+  const changeLanguage = (lng: "th" | "en" | "cn") => {
     i18n.changeLanguage(lng);
   };
 
@@ -101,6 +108,12 @@ const Language = () => {
             onSelect={() => changeLanguage("en")}
           >
             English
+          </DropdownMenu.Item>
+          <DropdownMenu.Item
+            className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+            onSelect={() => changeLanguage("cn")}
+          >
+            中文
           </DropdownMenu.Item>
         </DropdownMenu.Content>
       </DropdownMenu.Portal>
