@@ -89,7 +89,7 @@ export const Detail: React.FC<UrlPages> = ({ url }) => {
         addMessageToHistory(
           historyId,
           "bot",
-          "เกิดข้อผิดพลาดในการดึงคำตอบจากเซิร์ฟเวอร์"
+          t("error")
         );
       })
       .finally(() => {
@@ -107,6 +107,7 @@ export const Detail: React.FC<UrlPages> = ({ url }) => {
     addMessageToHistory,
     updateLastBotMessage,
     isAsking,
+    t
   ]);
 
   const handleSubmit = async () => {
@@ -158,7 +159,7 @@ export const Detail: React.FC<UrlPages> = ({ url }) => {
       addMessageToHistory(
         historyId,
         "bot",
-        "เกิดข้อผิดพลาดในการดึงคำตอบจากเซิร์ฟเวอร์"
+        t("error")
       );
       scrollToBottom();
     } finally {
@@ -171,7 +172,7 @@ export const Detail: React.FC<UrlPages> = ({ url }) => {
   if (!chatHistory) {
     return (
       <MainLayout>
-        <div className="text-center">ไม่พบประวัติการสนทนา</div>
+        <div className="text-center">{t("no_history")}</div>
       </MainLayout>
     );
   }

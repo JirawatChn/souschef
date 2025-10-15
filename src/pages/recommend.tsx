@@ -29,10 +29,16 @@ export const Recommendation = () => {
   const handleClick = (menuKey: string) => {
     const translatedMenu = t(menuKey);
     const lang = i18n.language;
-    const question =
-      lang === "th"
-        ? `วิธีทำ${translatedMenu}`
-        : `How to cook ${translatedMenu}`;
+
+    let question = "";
+
+    if (lang === "th") {
+      question = `วิธีทำ${translatedMenu}`;
+    } else if (lang === "cn") {
+      question = `如何制作${translatedMenu}`;
+    } else {
+      question = `How to cook ${translatedMenu}`;
+    }
 
     const newId = createHistory(question);
     navigate(`/detail/${newId}`);

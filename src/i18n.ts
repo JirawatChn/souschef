@@ -64,6 +64,7 @@ i18n
           history: "ประวัติการแชท",
           no_history: "ไม่มีประวัติการแชท",
           seeAll: "ดูเพิ่มเติม",
+          error:"เกิดข้อผิดพลาดในการดึงคำตอบจากเซิร์ฟเวอร์",
         },
       },
       en: {
@@ -118,6 +119,7 @@ i18n
           history: "Chat History",
           no_history: "No chat history",
           seeAll: "See all",
+          error: "An error occurred while fetching the response from the server"
         },
       },
       cn: {
@@ -171,6 +173,7 @@ i18n
           history: "聊天历史",
           no_history: "暂无聊天记录",
           seeAll: "查看全部",
+          error: "从服务器获取回复时发生错误"
         },
       },
     },

@@ -3,6 +3,7 @@ import { LuChevronDown } from "react-icons/lu";
 import { usePersonality } from "../contexts/usePersonality";
 import type { Personalitys } from "../contexts/personalityContext";
 import { useTranslation } from "react-i18next";
+import { MdLanguage } from "react-icons/md";
 
 const Personality = () => {
   const { t } = useTranslation();
@@ -32,7 +33,7 @@ const Personality = () => {
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger asChild>
-        <button className="min-w-48 px-4 py-2 rounded cursor-pointer flex justify-center items-center gap-1 hover:bg-gray-100">
+        <button className="min-w-48 px-4 py-2 rounded cursor-pointer flex justify-center items-center gap-1 hover:bg-gray-100 leading-none">
           {personalities.find((p) => p.value === personality)?.label ??
             "Select Personality"}
           <LuChevronDown />
@@ -86,6 +87,7 @@ const Language = () => {
     <DropdownMenu.Root>
       <DropdownMenu.Trigger asChild>
         <button className="px-4 py-2 rounded cursor-pointer flex justify-center items-center gap-1 hover:bg-gray-100">
+          <MdLanguage className="w-5 h-5" />
           {languageLabel}
           <LuChevronDown />
         </button>
