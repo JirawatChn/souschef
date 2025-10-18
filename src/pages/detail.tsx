@@ -62,6 +62,8 @@ export const Detail: React.FC<UrlPages> = ({ url }) => {
     setIsLoadingFirstAnswer(true);
     setIsAsking(true);
 
+ console.log(i18n.language);
+ 
     axios
       .post(
         `${url}/ask`,
@@ -109,6 +111,9 @@ export const Detail: React.FC<UrlPages> = ({ url }) => {
     isAsking,
     t
   ]);
+
+ 
+  
 
   const handleSubmit = async () => {
     scrollToBottom();
