@@ -5,6 +5,7 @@ import {
   LuDices,
   LuEllipsis,
   LuHistory,
+  LuHandHeart,
 } from "react-icons/lu";
 import { Link, useParams } from "react-router";
 import { useChatHistory } from "./useHistory";
@@ -50,6 +51,10 @@ export const Sidebar = () => {
         <Link to="/recommendation" className="menu-item">
           <LuChefHat className="w-6 h-6" />
           <span className="bold">{t("recommendation")}</span>
+        </Link>
+        <Link to="/nutrition" className="menu-item">
+          <LuHandHeart className="w-6 h-6" />
+          <span className="bold">{t("nutrition_daily")}</span>
         </Link>
         <Link to="/history" className="menu-item">
           <LuHistory className="w-6 h-6" />

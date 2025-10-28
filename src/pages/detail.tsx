@@ -61,8 +61,6 @@ export const Detail: React.FC<UrlPages> = ({ url }) => {
     hasFetched.current = true;
     setIsLoadingFirstAnswer(true);
     setIsAsking(true);
-
- console.log(i18n.language);
  
     axios
       .post(
