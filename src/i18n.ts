@@ -152,8 +152,8 @@ i18n
           error:
             "An error occurred while fetching the response from the server",
           nutrition_daily: "Daily Nutrition",
-          head: "Healthy Diet Guidelines",
           nutrition: {
+            head: "Healthy Diet Guidelines",
             source:
               "Source: World Health Organization (WHO) — “Healthy Diet” fact sheet and related WHO pages.",
             emphasize_foods: "Emphasize These Foods",

@@ -57,6 +57,7 @@ const Personality = ({ compact = false }: { compact?: boolean }) => {
           <DropdownMenuItem
             key={mode.value}
             onSelect={() => setPersonality(mode.value)}
+            className="focus:bg-[#fde6ba]"
           >
             <div className="flex flex-col">
               <span className="text-sm font-medium">{mode.label}</span>

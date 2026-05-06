@@ -17,6 +17,7 @@ export const Detail: React.FC<UrlPages> = ({ url }) => {
 
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const streamingIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const { history, addMessageToHistory, updateLastBotMessage } =
     useChatHistory();
   const { personality } = usePersonality();
@@ -34,15 +35,17 @@ export const Detail: React.FC<UrlPages> = ({ url }) => {
     onUpdate: (text: string) => void,
     onDone: () => void
   ) => {
+    if (streamingIntervalRef.current) clearInterval(streamingIntervalRef.current);
     let i = 0;
-    const interval = setInterval(() => {
+    streamingIntervalRef.current = setInterval(() => {
       i++;
       onUpdate(fullText.slice(0, i));
       if (i >= fullText.length) {
-        clearInterval(interval);
+        clearInterval(streamingIntervalRef.current!);
+        streamingIntervalRef.current = null;
         onDone();
       }
-    }, 15); // ปรับความเร็วได้ตามใจ
+    }, 15);
   };
 
   const scrollToBottom = () => {
@@ -51,6 +54,15 @@ export const Detail: React.FC<UrlPages> = ({ url }) => {
 
   const hasFetched = useRef(false);
   const [isAsking, setIsAsking] = useState(false);
+
+  useEffect(() => {
+    return () => {
+      if (streamingIntervalRef.current) {
+        clearInterval(streamingIntervalRef.current);
+        streamingIntervalRef.current = null;
+      }
+    };
+  }, []);
 
   useEffect(() => {
     if (!chatHistory || hasFetched.current || isAsking) return;

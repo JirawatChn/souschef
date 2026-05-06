@@ -2,7 +2,7 @@ import { useState } from "react";
 import { MainLayout } from "../components/mainLayout";
 import souschefLogo from "../assets/souschef.png";
 import { LuDices, LuChevronRight } from "react-icons/lu";
-import { Card, Flex } from "@radix-ui/themes";
+import { Card } from "@radix-ui/themes";
 import { useNavigate } from "react-router";
 import { UrlPages } from "../components/props";
 import { useTranslation } from "react-i18next";
@@ -52,10 +52,14 @@ export const RandomMenu: React.FC<UrlPages> = () => {
   const handleClick = (menuKey: string) => {
     const translatedMenu = t(menuKey);
     const lang = i18n.language;
-    const question =
-      lang === "th"
-        ? `วิธีทำ${translatedMenu}`
-        : `How to cook ${translatedMenu}`;
+    let question: string;
+    if (lang === "th") {
+      question = `วิธีทำ${translatedMenu}`;
+    } else if (lang === "cn") {
+      question = `如何制作${translatedMenu}`;
+    } else {
+      question = `How to cook ${translatedMenu}`;
+    }
 
     const newId = createHistory(question);
     navigate(`/detail/${newId}`);
@@ -91,12 +95,12 @@ export const RandomMenu: React.FC<UrlPages> = () => {
         </div>
 
         {randomMenus.length > 0 && (
-          <div className="mt-6 w-full px-4 max-w-[50%]">
-            <Flex direction="row" gap="3" wrap="wrap" justify="center">
+          <div className="mt-6 w-full px-4 max-w-3xl">
+            <div className="grid grid-cols-3 gap-3">
               {randomMenus.map((item, index) => (
                 <Card
                   key={index}
-                  className="relative p-4 w-[250px] h-[60px] cursor-pointer hover:shadow-md transition flex items-center whitespace-pre-line"
+                  className="relative p-4 h-[60px] cursor-pointer hover:shadow-md transition flex items-center whitespace-pre-line bg-white border border-gray-200 rounded-xl"
                   onClick={() => handleClick(item)}
                 >
                   <span className="text-left text-base">{t(item)}</span>
@@ -105,7 +109,7 @@ export const RandomMenu: React.FC<UrlPages> = () => {
                   </div>
                 </Card>
               ))}
-            </Flex>
+            </div>
           </div>
         )}
       </div>

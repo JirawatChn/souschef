@@ -1,7 +1,7 @@
 import { MainLayout } from "../components/mainLayout";
 import souschefLogo from "../assets/souschef.png";
 import { useTranslation } from "react-i18next";
-import { Card, Flex } from "@radix-ui/themes";
+import { Card } from "@radix-ui/themes";
 import { LuChevronRight } from "react-icons/lu";
 import { useNavigate } from "react-router";
 import { useChatHistory } from "../components/useHistory";
@@ -61,12 +61,12 @@ export const Recommendation = () => {
         />
         <span className="bold text-3xl mt-4">sousChef AI</span>
         <span className="bold text-lg">{t("recommendation")}</span>
-        <div className="mt-6 w-full px-4 max-w-[50%]">
-          <Flex direction="row" gap="3" wrap="wrap" justify="center">
+        <div className="mt-6 w-full px-4 max-w-3xl">
+          <div className="grid grid-cols-3 gap-3">
             {menu.map((item, index) => (
               <Card
                 key={index}
-                className="relative p-4 w-[250px] h-[60px] cursor-pointer hover:shadow-md transition flex items-center whitespace-pre-line"
+                className="relative p-4 h-[60px] cursor-pointer hover:shadow-md transition flex items-center whitespace-pre-line bg-white border border-gray-200 rounded-xl"
                 onClick={() => handleClick(item)}
               >
                 <span className="text-left text-base">{t(item)}</span>
@@ -75,7 +75,7 @@ export const Recommendation = () => {
                 </div>
               </Card>
             ))}
-          </Flex>
+          </div>
         </div>
       </div>
     </MainLayout>

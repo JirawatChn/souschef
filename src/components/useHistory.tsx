@@ -1,4 +1,12 @@
-import { useState, useEffect } from "react";
+import {
+  useState,
+  useEffect,
+  useCallback,
+  useMemo,
+  createContext,
+  useContext,
+  ReactNode,
+} from "react";
 import { useNavigate } from "react-router";
 import { v4 as uuidv4 } from "uuid";
 
@@ -13,77 +21,62 @@ interface ChatHistory {
   messages: ChatMessage[];
 }
 
+interface ChatHistoryContextType {
+  history: ChatHistory[];
+  createHistory: (initialMessage: string, botReply?: string) => string;
+  addMessageToHistory: (id: string, sender: "user" | "bot", message: string) => void;
+  clearHistory: (currentId?: string) => void;
+  removeHistory: (idToRemove: string, currentId?: string) => void;
+  updateLastBotMessage: (id: string, newText: string) => void;
+}
+
 const LOCAL_STORAGE_KEY = "history";
 
-export const useChatHistory = () => {
+const ChatHistoryContext = createContext<ChatHistoryContextType | undefined>(undefined);
+
+export const ChatHistoryProvider = ({ children }: { children: ReactNode }) => {
   const navigate = useNavigate();
   const [history, setHistory] = useState<ChatHistory[]>(() => {
-    const storedHistory = localStorage.getItem(LOCAL_STORAGE_KEY);
-    return storedHistory ? JSON.parse(storedHistory) : [];
+    const stored = localStorage.getItem(LOCAL_STORAGE_KEY);
+    return stored ? JSON.parse(stored) : [];
   });
 
   useEffect(() => {
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(history));
   }, [history]);
 
-  // สร้าง history ใหม่ (คำถามใหม่ที่ user ส่ง)
-  // เพิ่ม optional botReply parameter
-  const createHistory = (initialMessage: string, botReply?: string) => {
-    const id = uuidv4(); 
-
-    const userMessage: ChatMessage = {
-      sender: "user",
-      message: initialMessage,
-    };
+  const createHistory = useCallback((initialMessage: string, botReply?: string) => {
+    const id = uuidv4();
+    const userMessage: ChatMessage = { sender: "user", message: initialMessage };
     const botMessage: ChatMessage | undefined = botReply
       ? { sender: "bot", message: botReply }
       : undefined;
-
-    const newHistory: ChatHistory = {
+    const newEntry: ChatHistory = {
       id,
       display: initialMessage,
       messages: botMessage ? [userMessage, botMessage] : [userMessage],
     };
-
-    setHistory((prevHistory) => [...prevHistory, newHistory]);
-
+    setHistory((prev) => [...prev, newEntry]);
     return id;
-  };
+  }, []);
 
-  // เพิ่มข้อความลงใน history ที่มีอยู่แล้ว
-  const addMessageToHistory = (
-    id: string,
-    sender: "user" | "bot",
-    message: string
-  ) => {
-    setHistory((prevHistory) => {
-      const newHistory = [...prevHistory];
-      const target = newHistory.find((h) => h.id === id);
-  
-      if (target) {
-        const lastMessage = target.messages[target.messages.length - 1];
-  
+  const addMessageToHistory = useCallback((id: string, sender: "user" | "bot", message: string) => {
+    setHistory((prev) =>
+      prev.map((h) => {
+        if (h.id !== id) return h;
+        const last = h.messages[h.messages.length - 1];
         const isLoadingReply =
-          lastMessage?.sender === "bot" &&
-          lastMessage?.message === "กำลังหาคำตอบให้อยู่... 🍳";
-  
+          last?.sender === "bot" && last?.message === "กำลังหาคำตอบให้อยู่... 🍳";
         if (isLoadingReply) {
-          lastMessage.message = message; // แทนที่ข้อความ
-        } else {
-          if (
-            lastMessage?.sender !== sender ||
-            lastMessage?.message !== message
-          ) {
-            target.messages.push({ sender, message });
-          }
+          return { ...h, messages: [...h.messages.slice(0, -1), { ...last, message }] };
         }
-      }
-  
-      return newHistory;
-    });
-  };
-  
-  const updateLastBotMessage = (id: string, newText: string) => {
+        if (last?.sender === sender && last?.message === message) return h;
+        return { ...h, messages: [...h.messages, { sender, message }] };
+      })
+    );
+  }, []);
+
+  const updateLastBotMessage = useCallback((id: string, newText: string) => {
     setHistory((prev) =>
       prev.map((h) =>
         h.id === id
@@ -98,34 +91,33 @@ export const useChatHistory = () => {
           : h
       )
     );
-  };
-  
+  }, []);
 
-  const clearHistory = (currentId?: string) => {
+  const clearHistory = useCallback((currentId?: string) => {
     setHistory([]);
     localStorage.removeItem(LOCAL_STORAGE_KEY);
-  
-    if (currentId) {
-      navigate("/"); // กลับหน้าหลักถ้าอยู่ในหน้าที่มี id
-    }
-  };
-  
+    if (currentId) navigate("/");
+  }, [navigate]);
 
-  const removeHistory = (idToRemove: string, currentId?: string) => {
+  const removeHistory = useCallback((idToRemove: string, currentId?: string) => {
     setHistory((prev) => prev.filter((item) => item.id !== idToRemove));
-  
-    if (currentId && idToRemove === currentId) {
-      navigate("/");
-    }
-  };
-  
+    if (currentId && idToRemove === currentId) navigate("/");
+  }, [navigate]);
 
-  return {
-    history,
-    createHistory,
-    addMessageToHistory,
-    clearHistory,
-    removeHistory,
-    updateLastBotMessage
-  };
+  const value = useMemo(
+    () => ({ history, createHistory, addMessageToHistory, clearHistory, removeHistory, updateLastBotMessage }),
+    [history, createHistory, addMessageToHistory, clearHistory, removeHistory, updateLastBotMessage]
+  );
+
+  return (
+    <ChatHistoryContext.Provider value={value}>
+      {children}
+    </ChatHistoryContext.Provider>
+  );
+};
+
+export const useChatHistory = () => {
+  const context = useContext(ChatHistoryContext);
+  if (!context) throw new Error("useChatHistory must be used within ChatHistoryProvider");
+  return context;
 };

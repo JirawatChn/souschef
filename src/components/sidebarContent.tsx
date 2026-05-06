@@ -49,7 +49,7 @@ export const SidebarContent = () => {
     <div className="flex flex-col h-full">
       <div className="flex justify-between items-center px-3 py-4">
         <span className="text-lg font-bold text-[#2E3440]">sousChef AI</span>
-        <Button variant="ghost" size="icon" asChild>
+        <Button variant="ghost" size="icon" className="hover:bg-[#fde6ba] text-black hover:text-black" asChild>
           <Link to="/">
             <HiOutlinePencilSquare className="w-5 h-5" />
           </Link>
@@ -64,8 +64,8 @@ export const SidebarContent = () => {
               variant="ghost"
               className={`w-full justify-start gap-2 font-bold text-[#2E3440] ${
                 location.pathname === item.to
-                  ? "bg-amber-200 hover:bg-amber-200"
-                  : "hover:bg-amber-100"
+                  ? "bg-[#fde6ba] hover:bg-[#fde6ba]"
+                  : "hover:bg-[#fde6ba]"
               }`}
               asChild
             >
@@ -95,7 +95,7 @@ export const SidebarContent = () => {
             {visibleHistory.map((item) => (
               <div
                 key={item.id}
-                className="flex items-center group rounded-md hover:bg-amber-100"
+                className="flex items-center group rounded-md hover:bg-[#fde6ba]"
               >
                 <Link
                   to={`/detail/${item.id}`}
@@ -117,7 +117,7 @@ export const SidebarContent = () => {
             {isMoreThanFive && (
               <Button
                 variant="ghost"
-                className="w-full justify-start gap-2 hover:bg-amber-100 text-gray-600"
+                className="w-full justify-start gap-2 hover:bg-[#fde6ba] text-gray-600"
                 asChild
               >
                 <Link to="/history">

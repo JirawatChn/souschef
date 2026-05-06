@@ -1,6 +1,5 @@
 import { MainLayout } from "../components/mainLayout";
 import souschefLogo from "../assets/souschef.png";
-import { Box, Card, Flex, Text } from "@radix-ui/themes";
 import { LuMessageCircleQuestion } from "react-icons/lu";
 import { useMemo, useRef } from "react";
 import { useNavigate } from "react-router";
@@ -42,7 +41,7 @@ export const Home = () => {
   };
 
   function getRandomSubset<T>(arr: T[], n: number): T[] {
-    return arr.sort(() => Math.random() - 0.5).slice(0, n);
+    return [...arr].sort(() => Math.random() - 0.5).slice(0, n);
   }
 
   const questions = useMemo(() => getRandomSubset(allQuestions, 3), []);
@@ -64,54 +63,22 @@ export const Home = () => {
         />
         <span className="bold text-3xl mt-4">sousChef AI</span>
         <span className="bold ">{t("heading")}</span>
-        <Flex
-          direction="row"
-          wrap="wrap"
-          justify="center"
-          gap="4"
-          className="mt-8 max-w-[1200px] mx-auto"
-        >
+        <div className="flex flex-row flex-wrap justify-center gap-4 mt-8 max-w-[1200px] mx-auto">
           {questions.map((q, i) => (
             <div
               key={i}
-              style={{ textDecoration: "none" }}
               onClick={() => handleCardClick(t(q.key))}
+              className="bg-white rounded-xl border border-gray-200 p-5 w-[220px] min-h-[110px] flex flex-col gap-3 cursor-pointer shadow-sm hover:shadow-md hover:scale-[1.02] transition-all"
             >
-              <Card
-                variant="classic"
-                style={{
-                  width: "250px",
-                  height: "120px",
-                  padding: "1.2rem",
-                  boxShadow: "0 8px 20px rgba(0,0,0,0.05)",
-                  transition: "transform 0.2s ease, box-shadow 0.2s ease",
-                  cursor: "pointer",
-                }}
-                className="hover:shadow-xl hover:scale-[1.03] bg-white relative"
-              >
-                <Flex direction="column" gap="2" align="start">
-                  <Box
-                    style={{
-                      backgroundColor: "#fff2de",
-                      borderRadius: "50%",
-                      padding: "0.4rem",
-                    }}
-                  >
-                    <LuMessageCircleQuestion size={20} />
-                  </Box>
-                  <Text
-                    size="3"
-                    weight="medium"
-                    color="gray"
-                    className="whitespace-pre-line"
-                  >
-                    {t(q.key)}
-                  </Text>
-                </Flex>
-              </Card>
+              <div className="bg-[#fff2de] rounded-full p-2 w-fit">
+                <LuMessageCircleQuestion size={20} className="text-gray-600" />
+              </div>
+              <span className="text-sm text-gray-500 font-medium leading-snug">
+                {t(q.key)}
+              </span>
             </div>
           ))}
-        </Flex>
+        </div>
         <InputText inputRef={inputRef} handleSubmit={handleSubmit} />
       </div>
     </MainLayout>
