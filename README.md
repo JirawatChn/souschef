@@ -1,54 +1,78 @@
-# React + TypeScript + Vite
+# Sous Chef AI
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+An intelligent culinary assistant powered by AI and NLP, designed to enhance nutrition quality and food decision-making for consumers in the China-ASEAN region.
 
-Currently, two official plugins are available:
+**Live:** [jirawatchn.github.io/souschef](https://jirawatchn.github.io/souschef)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## Expanding the ESLint configuration
+## What it solves
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- **Overchoice** — eliminates the "what should I eat today?" dilemma
+- **Taste-Health Balance** — bridges preferred flavors with nutritional needs
+- **Nutrition Knowledge** — surfaces accurate, standardized nutritional information
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+## Features
+
+- **Personalized Recommendation** — suggests menus based on available ingredients and user requirements
+- **Nutrition Analysis** — detailed nutritional facts for each recommended dish
+- **Trustworthy Database** — data sourced from:
+  - **NLOVECOOKING.COM** — authentic Thai recipes
+  - **MAHIDOL FOOD DB 2025** — nutritional data
+  - **WHO TABLE** — daily recommended nutrient intake standards
+
+## How it works
+
+```
+Input (ingredients / dietary needs)
+  → NLP → FAISS → Gemini
+    → Menu + Nutrition Summary
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Tech Stack
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+| Layer | Technology |
+|---|---|
+| Frontend | React 19, TypeScript, Vite, Tailwind CSS v4 |
+| UI Components | shadcn/ui, Radix UI |
+| Routing | React Router v7 |
+| i18n | i18next (Thai default, English, Chinese) |
+| HTTP | Axios |
+| Deployment | GitHub Pages |
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+## Getting Started
+
+```bash
+yarn install
+yarn dev       # start dev server
+yarn build     # type-check + production build
+yarn preview   # preview production build locally
+yarn deploy    # build + deploy to GitHub Pages
 ```
+
+## Environment Variables
+
+Create a `.env` file at the project root:
+
+```
+VITE_API_URL=https://your-backend-url
+```
+
+## Personality Modes
+
+The assistant supports three AI personas selectable from the sidebar:
+
+- **Sous Chef** — professional culinary guidance
+- **Buddy** — casual, friendly food suggestions
+- **Chef Ian** — creative chef with signature style
+
+## Routes
+
+| Path | Page |
+|---|---|
+| `/` | Home — ingredient input & chat |
+| `/detail/:id` | Chat thread |
+| `/recommendation` | Personalized menu recommendations |
+| `/random` | Random dish discovery |
+| `/history` | Conversation history |
+| `/nutrition` | Nutrition analysis |
