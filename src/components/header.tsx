@@ -1,11 +1,18 @@
-﻿import { DropdownMenu } from "radix-ui";
-import { LuChevronDown } from "react-icons/lu";
+// src/components/header.tsx
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { LuChevronDown, LuMenu, LuChefHat } from "react-icons/lu";
+import { MdLanguage } from "react-icons/md";
 import { usePersonality } from "../contexts/usePersonality";
 import type { Personalitys } from "../contexts/personalityContext";
 import { useTranslation } from "react-i18next";
-import { MdLanguage } from "react-icons/md";
 
-const Personality = () => {
+const Personality = ({ compact = false }: { compact?: boolean }) => {
   const { t } = useTranslation();
   const { personality, setPersonality } = usePersonality();
   const personalities: {
@@ -31,44 +38,41 @@ const Personality = () => {
   ];
 
   return (
-    <DropdownMenu.Root>
-      <DropdownMenu.Trigger asChild>
-        <button className="min-w-48 px-4 py-2 rounded cursor-pointer flex justify-center items-center gap-1 hover:bg-gray-100 leading-none">
-          {personalities.find((p) => p.value === personality)?.label ??
-            "Select Personality"}
-          <LuChevronDown />
-        </button>
-      </DropdownMenu.Trigger>
-
-      <DropdownMenu.Portal>
-        <DropdownMenu.Content
-          align="start"
-          sideOffset={5}
-          className="bg-white shadow-md rounded-md p-2 w-48 border border-gray-200"
-        >
-          {personalities.map((mode) => (
-            <DropdownMenu.Item
-              key={mode.value}
-              className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-              onSelect={() => setPersonality(mode.value)}
-            >
-              <div className="flex flex-col">
-                <span className="text-sm font-medium">{mode.label}</span>
-                <span className="text-xs text-gray-500 whitespace-pre-line">
-                  {mode.description}
-                </span>
-              </div>
-            </DropdownMenu.Item>
-          ))}
-        </DropdownMenu.Content>
-      </DropdownMenu.Portal>
-    </DropdownMenu.Root>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        {compact ? (
+          <Button variant="ghost" size="icon">
+            <LuChefHat className="w-5 h-5" />
+          </Button>
+        ) : (
+          <Button variant="outline" className="min-w-48 gap-1">
+            {personalities.find((p) => p.value === personality)?.label ??
+              "Select Personality"}
+            <LuChevronDown className="w-4 h-4" />
+          </Button>
+        )}
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="start">
+        {personalities.map((mode) => (
+          <DropdownMenuItem
+            key={mode.value}
+            onSelect={() => setPersonality(mode.value)}
+          >
+            <div className="flex flex-col">
+              <span className="text-sm font-medium">{mode.label}</span>
+              <span className="text-xs text-gray-500 whitespace-pre-line">
+                {mode.description}
+              </span>
+            </div>
+          </DropdownMenuItem>
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 };
 
-const Language = () => {
+const Language = ({ compact = false }: { compact?: boolean }) => {
   const { i18n } = useTranslation();
-
   const language = i18n.language;
   const normalizedLanguage = language.split("-")[0] as "th" | "en" | "cn";
   const languageLabelMap = {
@@ -84,53 +88,62 @@ const Language = () => {
   };
 
   return (
-    <DropdownMenu.Root>
-      <DropdownMenu.Trigger asChild>
-        <button className="px-4 py-2 rounded cursor-pointer flex justify-center items-center gap-1 hover:bg-gray-100">
-          <MdLanguage className="w-5 h-5" />
-          {languageLabel}
-          <LuChevronDown />
-        </button>
-      </DropdownMenu.Trigger>
-
-      <DropdownMenu.Portal>
-        <DropdownMenu.Content
-          align="end"
-          sideOffset={5}
-          className="bg-white shadow-md rounded-md p-2 w-48 border border-gray-200"
-        >
-          <DropdownMenu.Item
-            className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-            onSelect={() => changeLanguage("th")}
-          >
-            ภาษาไทย
-          </DropdownMenu.Item>
-          <DropdownMenu.Item
-            className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-            onSelect={() => changeLanguage("en")}
-          >
-            English
-          </DropdownMenu.Item>
-          <DropdownMenu.Item
-            className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-            onSelect={() => changeLanguage("cn")}
-          >
-            中文
-          </DropdownMenu.Item>
-        </DropdownMenu.Content>
-      </DropdownMenu.Portal>
-    </DropdownMenu.Root>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        {compact ? (
+          <Button variant="ghost" size="icon">
+            <MdLanguage className="w-5 h-5" />
+          </Button>
+        ) : (
+          <Button variant="outline" className="gap-1">
+            <MdLanguage className="w-5 h-5" />
+            {languageLabel}
+            <LuChevronDown className="w-4 h-4" />
+          </Button>
+        )}
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuItem onSelect={() => changeLanguage("th")}>
+          ภาษาไทย
+        </DropdownMenuItem>
+        <DropdownMenuItem onSelect={() => changeLanguage("en")}>
+          English
+        </DropdownMenuItem>
+        <DropdownMenuItem onSelect={() => changeLanguage("cn")}>
+          中文
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 };
 
 export const Header = () => {
   return (
-    <div className="flex justify-between mt-[1rem] ">
-      <div className="pl-[1.5rem]">
+    <div className="hidden md:flex justify-between mt-4">
+      <div className="pl-6">
         <Personality />
       </div>
-      <div className="pr-[1.5rem]">
+      <div className="pr-6">
         <Language />
+      </div>
+    </div>
+  );
+};
+
+export const MobileHeader = ({
+  onOpenSidebar,
+}: {
+  onOpenSidebar: () => void;
+}) => {
+  return (
+    <div className="flex md:hidden items-center justify-between h-14 px-3 bg-[#FFFEF8] border-b border-amber-200 sticky top-0 z-50">
+      <Button variant="ghost" size="icon" onClick={onOpenSidebar}>
+        <LuMenu className="w-5 h-5" />
+      </Button>
+      <span className="font-bold text-[#2E3440]">sousChef AI</span>
+      <div className="flex items-center gap-1">
+        <Personality compact />
+        <Language compact />
       </div>
     </div>
   );
